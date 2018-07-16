@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: ['./src/js/index.js'],
+    entry: ['./src/js/app.js'],
     output: {
         path: __dirname + '/dist',
         filename: './bundle.js'
@@ -9,12 +9,14 @@ module.exports = {
     module: {
         rules: [
             { test: /.js/, loader: 'babel-loader', exclude: /node_modules/ },
-            { test: /.html/, loader: 'raw-loader', exclude: /node_modules/ }
+            { test: /.html/, loader: 'raw-loader', exclude: /node_modules/ },
+            { test: /\.(s*)css$/, use: ['style-loader', 'css-loader', 'sass-loader']}
         ]
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: './public/index.html'
+            // template: './test.html'
         })
     ],
     mode: 'development'
