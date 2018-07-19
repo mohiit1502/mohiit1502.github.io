@@ -131,7 +131,7 @@ span {
 
 #sidebar ul.components {
     padding: 20px 0;
-    border-bottom: 1px solid #47748b;
+    border-bottom: 3px solid $themeColor-Dark;
 }
 
 #sidebar ul li a {
@@ -286,6 +286,25 @@ ADDITIONS
   margin: auto;
 }
 
+.good {
+    animation: anim .3s ease-in-out;
+}
+
+@keyframes anim {
+    0% {
+      display: none;
+      opacity: 0;
+    }
+    1% {
+      display: block;
+      opacity: 0;
+      transform: scale(0);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+}
 @keyframes blinkingText {
   0%{     color: #000;    }
   49%{    color: transparent; }
@@ -308,6 +327,7 @@ ADDITIONS
   font-size: 1.8em;
   padding: 0.2em;
 }
+
 /* --------------------------------------------------
   OVERRIDES
   --------------------------------------------------*/
@@ -331,3 +351,29 @@ ADDITIONS
   .container-fluid {
     padding-left: 0.3em;
   }
+
+  .card-group {
+    flex-direction:column;
+  }
+
+  #command.form-control {
+      width: 87%;
+  }
+
+  .ml-auto {
+      margin-left: 0!important;
+  }
+
+@media(min-width: 576px) {
+    .card-group>.card:first-child {
+        border-top-right-radius: .25rem;
+        border-bottom-right-radius: .25rem;
+    }
+    .card-group>.card:not(:first-child):not(:last-child):not(:only-child) {
+        border-radius: .25rem;
+    }
+    .card-group>.card:last-child {
+        border-top-left-radius: .25rem;
+        border-bottom-left-radius: .25rem;
+    }
+}

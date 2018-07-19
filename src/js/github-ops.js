@@ -1,42 +1,288 @@
+const config = require('./config.js');
+const GithubHelper = require('./helper.js');
+const githubHelper = new GithubHelper();
+const DomManipulator = require('./dom-ops.js');
+const dom = new DomManipulator();
+
 module.exports = class Github {
+
+    constructor() {
+        this.authorizationToken =  "token " + config.gitToken;
+    }
 
     getToken() {
 
     }
 
-    createRepository(newRepoJson) {
-        $.ajax({
-            type: "POST",
-            headers: {'Authorization' : 'token bcce9020b0604acc8a535d6d0e026b04b4996432'},
-            url: "https://api.github.com/user/repos",
-            contentType: "application/json",
-            dataType: "jsonp",
-            data: newRepoJson
+    authenticate() {
+
+    }
+
+    viewRepositories() {
+        var repositories = '';
+        let url = 'https://api.github.com/user/repos';
+        fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                }
+            }
+        )
+        .then(function(response) {
+            response.json().then(function(body){
+                repositories = body; 
+                console.log(repositories); 
+                return repositories;
+            });
         })
+        .catch(error => console.error('Fetch Error =\n', error));
+        return repositories;
     }
 
-    updateRepository(updateRepoJson) {
-
+    createRepository(newRepoJson) {
+        let url = 'https://api.github.com/user/repos';
+        var responsePromise = '';
+        fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                },
+                body: JSON.stringify(newRepoJson)
+            }
+        )
+        .then(function(response) {
+            dom.toggleModals(response);
+        })
+        .catch(error => console.error('Fetch Error =\n', error));
     }
 
-    deleteRepositoy(repoId) {
+    updateRepository(updateRepoJson, repoName) {
+        repoName = "Hello-World3";
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName;
+        fetch(url, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                },
+                body: JSON.stringify(updateRepoJson)
+            }
+        )
+        .then(response => response.json())
+        .catch(error => console.error('Fetch Error =\n', error));  
+    }
 
+    deleteRepository(repoName) {
+        repoName = "Hello-World2";
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName;
+        fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                }
+            }
+        )
+        .then(response => response.json())
+        .catch(error => console.error('Fetch Error =\n', error));  
     }
 
     createIssue(newIssueJson) {
-
+        let url = 'https://api.github.com/repos/mohiit1502/stack_route_prj7/issues';
+        fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                },
+                body: JSON.stringify(newIssueJson)
+            }
+        )
+        .then(response => response.json())
+        .catch(error => console.error('Fetch Error =\n', error)); 
     }
 
-    updateIssue(updateIssueJson) {
-
+    updateIssue(updateIssueJson, repoName, issueNumber) {
+        repoName = 'stack_route_prj7';
+        issueNumber = 2;
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues/' + issueNumber;
+        fetch(url, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                },
+                body: JSON.stringify(updateIssueJson)
+            }
+        )
+        .then(response => response.json())
+        .catch(error => console.error('Fetch Error =\n', error)); 
     }
 
-    deleteIssue(issueId) {
-        
+    closeIssue(closeIssueJson, repoName, issueNumber) {
+        repoName = 'stack_route_prj7';
+        issueNumber = 2;
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues/' + issueNumber;
+        fetch(url, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                },
+                body: JSON.stringify(closeIssueJson)
+            }
+        )
+        .then(response => response.json())
+        .catch(error => console.error('Fetch Error =\n', error)); 
     }
 
-    closeIssue(issueId) {
+    reopenIssue(reopenIssueJson, repoName, issueNumber) {
+        repoName = 'stack_route_prj7';
+        issueNumber = 2;
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues/' + issueNumber;
+        fetch(url, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                },
+                body: JSON.stringify(reopenIssueJson)
+            }
+        )
+        .then(response => response.json())
+        .catch(error => console.error('Fetch Error =\n', error)); 
+    }
 
+    displayIssue(repoName, issueNumber) {
+        repoName = 'stack_route_prj7';
+        issueNumber = 2;
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues/' + issueNumber;
+        var issues = '';
+        fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                }
+            }
+        )
+        .then(function(response) {
+            response.json().then(function(body){
+                issues = body; 
+                console.log(issues); 
+                return issues;
+            });
+        })
+        .catch(error => console.error('Fetch Error =\n', error));
+        return issues;
+    }
+
+    addIssueComment(commentBodyJson, repoName, issueNumber) {
+        repoName = "stack_route_prj7";
+        issueNumber = 2;
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues/' + issueNumber + "/comments";
+        fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                },
+                body: JSON.stringify(commentBodyJson)
+            }
+        )
+        .then(response => response.json())
+        .catch(error => console.error('Fetch Error =\n', error)); 
+    }
+
+    displayLastComment(repoName, issueNumber) {
+        repoName = "stack_route_prj7";
+        issueNumber = 2;
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues/' + issueNumber + "/comments";
+        var comments = [];
+        var latestComment = "";
+        fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                }
+            }
+        )
+        .then(function(response) {
+            response.json().then(function(body){
+                comments = body;
+                latestComment = githubHelper.getLatestComment(comments);
+                console.log(comments);
+                console.log(latestComment); 
+                return latestComment;
+            });
+        })
+        .catch(error => console.error('Fetch Error =\n', error)); 
+    }
+
+    displayIssuesForUser() {
+        let url = 'https://api.github.com/user/issues';
+        fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                }
+            }
+        )
+        .then(response => response.json())
+        .catch(error => console.error('Fetch Error =\n', error)); 
+    }
+
+    displayIssuesOnRepo() {
+        repoName = 'stack_route_prj7';
+        issueNumber = 2;
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues/';
+        fetch(url, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": this.authorizationToken
+                },
+                body: JSON.stringify(updateIssueJson)
+            }
+        )
+        .then(response => response.json())
+        .catch(error => console.error('Fetch Error =\n', error)); 
+    }
+
+    addCollaborator(repoName, collaborator) {
+        repoName = 'stack_route_prj7';
+        collaborator = 'swat1508';
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/collaborators/' + collaborator;
+        fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": this.authorizationToken
+                }
+            }
+        )
+        .then(response => response.json())
+        .catch(error => console.error('Fetch Error =\n', error)); 
+    }
+
+    removeCollaborator(repoName, collaborator) {
+        repoName = 'stack_route_prj7';
+        collaborator = 'swat1508';
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/collaborators/' + collaborator;
+        fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": this.authorizationToken
+                }
+            }
+        )
+        .then(response => response.json())
+        .catch(error => console.error('Fetch Error =\n', error)); 
     }
 
     createUser(newuserJson) {
@@ -48,14 +294,6 @@ module.exports = class Github {
     }
 
     deleteUser(userId) {
-        
-    }
-
-    addCollaborator(userId, collaboratorId) {
-
-    }
-
-    removeCollaborator(userId, collaboratorId) {
 
     }
 }
