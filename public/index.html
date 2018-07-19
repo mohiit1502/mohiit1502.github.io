@@ -117,6 +117,7 @@
                     </div>
                 </nav>
             </div>
+            <!-- Alerts -->
             <div class="alert alert-success alert-dismissible fade show hide good" id="successAlert" role="alert">
                 <strong>Success! </strong><span id="op-msg"> Repository Added!</span>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -129,7 +130,12 @@
                 </button>
                 <strong>Oh snap!</strong> Change a few things up and try submitting again.
             </div>
-            <div class="line"></div>
+            <div class="alert alert-info alert-dismissible hide good" id="intentBox" role="alert">
+                <button type="button" id="hideInfoAlert" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>I understand you intend to: &nbsp;&nbsp;&nbsp;&nbsp;</strong><span id="intentName"></span>&nbsp;&nbsp;&nbsp;&nbsp;If not, please choose the correct option: 
+            </div>
             <!-- Widgets -->
             <div class="card-group" id="widgets">
                 <div class="card hide widget good" id="createissue">
@@ -139,8 +145,8 @@
                         <form>
                             <div class="form-row">
                                 <div class="form-group col-md-12 col-sm-12 col-lg-12 col-xs-12 mb-3">
-                                    <label for="issueName">Issue Title</label>
-                                    <input type="text" class="form-control" id="issueName" placeholder="Issue name" required>
+                                    <label for="issueTitle">Issue Title</label>
+                                    <input type="text" class="form-control" id="issueTitle" placeholder="Issue title" required>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -195,12 +201,12 @@
                             Please type some relevant words in the command box.
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary">OK</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <button style="display: none" type="submit" data-toggle="modal" data-target="#emptyCommandMessageModal"></button>
+            <button style="display: none" id="emptyCommandMsgDisplayer" type="submit" data-toggle="modal" data-target="#emptyCommandMessageModal"></button>
             <div class="card-group">
                 <div class="card">
                     <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->

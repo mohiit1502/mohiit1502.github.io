@@ -23,7 +23,7 @@ module.exports = $(document).ready(function () {
     $('#command').keyup(function(e){
         var code = (e.keyCode ? e.keyCode : e.which);
         if(code == 13) {
-            $('widgets').children().hide();
+            $('#widgets').children().addClass('hide');
             var command = document.getElementById('command').value;
             if(command) {
                 var text = { "text": command};
@@ -37,8 +37,8 @@ module.exports = $(document).ready(function () {
         var requestJSON = dom.getDataFromFormAsJSON();
         app.createRepository(requestJSON);
     })
+    $("#hideInfoAlert").on('click', function(){
+        $('#intentBox').addClass('hide');
+    })
 
-    $('#submitForm').click(function(e) {
-        e.preventDefault();
-    });
 });

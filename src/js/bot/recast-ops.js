@@ -28,6 +28,7 @@ module.exports = class Recast {
                 bodyRelevant = body.results;
                 intent = bodyRelevant.intents[0]["slug"];
                 if(intent !== undefined) {
+                    domManipulator.displayIntentBox(intent);
                     domManipulator.showWidget(intent);
                     domManipulator.populateRecastData(intent, bodyRelevant);
                   //  self.processIntent(intent);

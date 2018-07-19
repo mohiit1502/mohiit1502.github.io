@@ -2,6 +2,10 @@ module.exports = class DomManipulator {
 
     constructor() {
         this.createRepoWidgetCreated = false;
+        this.intentSlugToIntention = {
+            'createrepo' : "Create a Repository in Github",
+            'createissue' : "Raise an issue in Github",
+        };
     }
     showWidget(widgetName) {
         self = this;
@@ -54,6 +58,7 @@ module.exports = class DomManipulator {
         var createRepoWidget = self.createRepoWidget();
         if(!this.isVisible(createRepoWidget)) {
             createRepoWidget.classList.remove('hide');
+            $('#underWidgetLine').show();
         }    
     }
 
@@ -61,7 +66,16 @@ module.exports = class DomManipulator {
         var createIssueWidget = document.getElementById('createissue');
         if(!this.isVisible(createIssueWidget)) {
             createIssueWidget.classList.remove('hide');
+            $('#underWidgetLine').show();
         }    
+    }
+
+    displayIntentBox(intent) {
+        var intentBox = document.getElementById('intentBox');
+        if(!this.isVisible(intentBox)) {
+            intentBox.classList.remove('hide');
+        } 
+        $('#intentName').text(this.intentSlugToIntention[intent] + ' [slug: ' + intent + '].');
     }
 
     createRepoWidget() {
@@ -257,7 +271,7 @@ module.exports = class DomManipulator {
                 app.deleteRepository();
                 break;
             case "createissue":
-                app.createIssue();
+                self.populateCreateIssueData(recastResponse);
                 break;
             case "updateissue":
                 app.updateIssue();
@@ -294,6 +308,15 @@ module.exports = class DomManipulator {
                 && recastResponse.entities['git-repository']['0']['value']) {
             var repoName = recastResponse.entities['git-repository']['0']['value'];
             repoNameTextField.value = repoName;
+        }
+    }
+
+    populateCreateIssueData(recastResponse) {
+        var issueTitleTextField = document.getElementById('issueTitle');
+        if(issueTitleTextField && recastResponse && recastResponse.entities['git-repository'] && recastResponse.entities['git-repository'].length > 0 
+                && recastResponse.entities['git-repository']['0']['value']) {
+            var issueTitle = recastResponse.entities['git-repository']['0']['value'];
+            issueTitleTextField.value = issueTitle;
         }
     }
 
