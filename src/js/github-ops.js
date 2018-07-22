@@ -22,15 +22,15 @@ module.exports = class Github {
             console.log("token get success");
             response.json().then(function(body){
                 console.log(response);
-                repositories = body; 
+                token = body.access_token; 
                 console.log(body);
-                console.log(repositories); 
-                return repositories;
+                console.log(token); 
+                return token;
             });
             // dom.toggleModals(response);
         })
         .catch(error => console.error('Fetch Error =\n', error));
-        return repositories;
+        return token;
     }
 
     authenticate() {
