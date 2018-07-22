@@ -12,7 +12,7 @@ module.exports = class Github {
 
     getToken(getTokenRequest) {
         var token = '';
-        let url = 'https://github.com/login/oauth/access_token';
+        let url = 'https://cors-anywhere.herokuapp.com/https://github.com/login/oauth/access_token';
         fetch(url, {
                 method: "POST",
                 body: JSON.stringify(getTokenRequest)
