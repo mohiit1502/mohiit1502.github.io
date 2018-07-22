@@ -116,16 +116,17 @@
                         </div>
                     </div>
                 </nav>
+                <input type="hidden" id="intentHidden">
             </div>
             <!-- Alerts -->
             <div class="alert alert-success alert-dismissible fade show hide good" id="successAlert" role="alert">
                 <strong>Success! </strong><span id="op-msg"> Repository Added!</span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <button type="button" id="hideSuccessAlert" class="close" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="alert alert-danger alert-dismissible hide good" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <div class="alert alert-danger alert-dismissible hide good" id="dangerAlert" role="alert">
+                <button type="button" id="hideDangerAlert" class="close" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <strong>Oh snap!</strong> Change a few things up and try submitting again.
@@ -134,7 +135,7 @@
                 <button type="button" id="hideInfoAlert" class="close" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <strong>I understand you intend to: &nbsp;&nbsp;&nbsp;&nbsp;</strong><span id="intentName"></span>&nbsp;&nbsp;&nbsp;&nbsp;If not, please choose the correct option: 
+                <strong>I understand you intend to: &nbsp;&nbsp;</strong><span id="intentName"></span>&nbsp;&nbsp;If not, please choose the correct option: 
             </div>
             <!-- Widgets -->
             <div class="card-group" id="widgets">
@@ -144,30 +145,68 @@
                         <h5 class="card-title">Create Issue</h5>
                         <form>
                             <div class="form-row">
-                                <div class="form-group col-md-12 col-sm-12 col-lg-12 col-xs-12 mb-3">
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
                                     <label for="issueTitle">Issue Title</label>
                                     <input type="text" class="form-control" id="issueTitle" placeholder="Issue title" required>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="issueRepository">Issue Repository</label>
+                                    <input type="text" class="form-control" id="issueRepository" placeholder="Issue's Repository here" required>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
-                                    <label for="assignees">assignees</label>
-                                    <input type="text" class="form-control" id="assignees" placeholder="Comma separated user IDs">
+                                    <label for="assignees">Assignees</label>
+                                    <input type="text" class="form-control" id="assignees" placeholder="Comma Separated user IDs...">
                                 </div>
                                 <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
                                     <label for="labels">Issue Labels</label>
-                                    <input type="text" class="form-control" id="labels" placeholder="Comma Separated Labels">
+                                    <input type="text" class="form-control" id="labels" placeholder="Comma Separated Labels...">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="description">Issue Description:</label>
                                 <textarea class="form-control" rows="3" id="description"></textarea>
                             </div>
-                            <button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#exampleModalCenter">Submit</button>
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitConfirm" data-target="#submitConfirm">Submit</button>
                         </form>
                     </div>
                 </div>
+                <div class="card hide widget good" id="addcollab">
+                    <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                    <div class="card-body">
+                        <h5 class="card-title">Create Collaborator</h5>
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="collaboratorName">Collaborator Name</label>
+                                    <input type="text" class="form-control" id="collaboratorName" placeholder="Collaborator ID" required>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="repoForCollab">Repository Name</label>
+                                    <input type="text" class="form-control" id="repoForCollab" placeholder="Repository To Add collaborator on ...." required>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitAddCollab   " data-target="#submitConfirm">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="viewrepos" class="card hide widget good">
+                    <div class="card-body">
+                        <h5 class="card-title">View Repositories</h5>
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <p>View Repositories for the user mohiit1502?</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitAddCollab   " data-target="#submitConfirm">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="line hide" id="underWidgetLine"></div>
             </div>
+            <!-- Modals -->
             <div class="modal" id="submitConfirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
@@ -181,8 +220,8 @@
                             Are you sure you want to submit?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button id="submitGitData" type="button" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-secondary" id="btnCancelConfirm" data-dismiss="modal">Cancel</button>
+                            <button id="submitGitData" type="button" data-dimsiss="modal" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -207,11 +246,15 @@
                 </div>
             </div>
             <button style="display: none" id="emptyCommandMsgDisplayer" type="submit" data-toggle="modal" data-target="#emptyCommandMessageModal"></button>
-            <div class="card-group">
+            <!-- Cards -->
+            <div class="card-group" id="conversations">
                 <div class="card">
                     <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
+                        <h5 class="card-title">
+                            Card title
+                            <a class="close" href="#"><h6>x</h6></a>
+                        </h5>
                         <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
                     </div>
                     <div class="card-footer">
@@ -219,17 +262,6 @@
                     </div>
                 </div>
                 <div class="line"></div>
-                <div class="card">
-                    <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This
-                            card has even longer content than the first to show that equal height action.</p>
-                    </div>
-                    <div class="card-footer">
-                        <small class="text-muted">Commanded 3 mins ago</small>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

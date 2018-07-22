@@ -13,8 +13,9 @@ module.exports = class Microbot {
         return $github.viewRepositories();
     }
 
-    createRepository(requestJson) {
-        var promise = $github.createRepository(requestJson);
+    createRepository(requestData) {
+        var requestJson = requestData.request;
+        $github.createRepository(requestJson);
         // $github.createRepository({
         //     "name": "new-test-js-git-api-repo",
         //     "description": "This is your first repository",
@@ -42,17 +43,10 @@ module.exports = class Microbot {
         $github.deleteRepository();
     }
 
-    createIssue() {
-        $github.createIssue({
-            "title": "Found a bug",
-            "body": "I'm having a problem with this.",
-            "assignees": [
-                "mohiit1502"
-            ],
-            "labels": [
-                "bug"
-            ]
-        })
+    createIssue(requestData) {
+        var requestJson = requestData.request;
+        var repoName = requestData.urlParams.repoName;
+        $github.createIssue(requestJson, repoName);
     }
 
     updateIssue() {
@@ -98,20 +92,17 @@ module.exports = class Microbot {
         return $github.displayLastComment();
     }
 
-    addCollaborator() {
-        $github.addCollaborator({
-            "title": "Found a bug",
-            "body": "I'm having a problem with this.",
-            "assignees": [
-                "mohiit1502"
-            ],
-            "labels": [
-                "bug"
-            ]
-        });
+    addCollaborator(requestData) {
+        var repoName = requestData.urlParams.repoName;
+        var collaborator = requestData.urlParams.collaborator;
+        $github.addCollaborator(repoName, collaborator);
     }
 
     removeCollaborator() {
         $github.removeCollaborator();
+    }
+
+    callAppropriate(intent) {
+
     }
 }

@@ -28,7 +28,7 @@ a:focus {
     padding: 15px 10px;
     background: #fff;
     border: none;
-    border-radius: 0;
+    border-radius: 0 5px 5px 0;
     margin-bottom: 40px;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -43,7 +43,7 @@ a:focus {
     width: 100%;
     height: 1px;
     border-bottom: 1px dashed #ddd;
-    margin: 40px 0;
+    margin: 20px 0;
 }
 
 i,
@@ -259,6 +259,9 @@ a.article:hover {
     #sidebarCollapse span {
         display: none;
     }
+    .text-muted {
+        color: #bcb !important;
+    }
 }
 /* -------------------------------------------------
 ADDITIONS
@@ -288,6 +291,12 @@ ADDITIONS
 
 .good {
     animation: anim .3s ease-in-out;
+}
+
+.repoLink {
+    color: #000;
+    font-weight: bolder;
+    text-decoration: underline;
 }
 
 @keyframes anim {

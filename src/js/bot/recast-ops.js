@@ -1,4 +1,5 @@
-const config = require('./config.js');
+const $configBot = require('./config.js');
+const $config = require('./../config.js');
 const Microbot = require("./../microbot-ops.js");
 const app = new Microbot();
 const DomManipulator = require('./../dom-ops.js');
@@ -6,7 +7,7 @@ const domManipulator = new DomManipulator();
 
 module.exports = class Recast {
     constructor() {
-        this.recastToken = config.recasttoken;
+        this.recastToken = $configBot.recasttoken;
         this.requestUrl = "https://api.recast.ai/v2/request";
     }
 
@@ -27,6 +28,7 @@ module.exports = class Recast {
             response.json().then(function(body) {
                 bodyRelevant = body.results;
                 intent = bodyRelevant.intents[0]["slug"];
+                $('#' + $config.costants.hiddenIntentFieldId).val(intent)
                 if(intent !== undefined) {
                     domManipulator.displayIntentBox(intent);
                     domManipulator.showWidget(intent);

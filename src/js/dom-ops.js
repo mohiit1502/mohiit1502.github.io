@@ -1,72 +1,18 @@
+const $config = require('./config.js');
+
 module.exports = class DomManipulator {
 
     constructor() {
         this.createRepoWidgetCreated = false;
-        this.intentSlugToIntention = {
-            'createrepo' : "Create a Repository in Github",
-            'createissue' : "Raise an issue in Github",
-        };
-    }
-    showWidget(widgetName) {
-        self = this;
-        switch(widgetName) {
-            case "createrepo":
-                self.showCreateRepoWidget();
-                break;
-            case "updaterepo":
-                app.updateRepository();
-                break;
-            case "viewrepos":
-                app.viewRepositories();
-                break;
-            case "deleterepo":
-                app.deleteRepository();
-                break;
-            case "createissue":
-                self.showCreateIssueWidget();
-                break;  
-            case "updateissue":
-                app.updateIssue();
-                break;
-            case "closeissue":
-                app.closeIssue();
-                break;
-            case "reopenissue":
-                app.reopenIssue();
-                break;
-            case "displayissue":
-                app.displayIssue();
-                break;
-            case "addissuecomment":
-                app.addIssueComment();
-                break;
-            case "displaylastcomment":
-                app.displayLastComment();
-                break;
-            case "addcollab":
-                app.addCollaborator();
-                break;
-            case "removecollab":
-                app.removeCollaborator();
-                break;
-            default:
-                console.log("default");
-        }
+        this.commandCardCounter = 1;
     }
 
-    showCreateRepoWidget() {
-        var createRepoWidget = self.createRepoWidget();
-        if(!this.isVisible(createRepoWidget)) {
-            createRepoWidget.classList.remove('hide');
-            $('#underWidgetLine').show();
-        }    
-    }
-
-    showCreateIssueWidget() {
-        var createIssueWidget = document.getElementById('createissue');
-        if(!this.isVisible(createIssueWidget)) {
-            createIssueWidget.classList.remove('hide');
-            $('#underWidgetLine').show();
+    showWidget(intent) {
+        //var intent = $('#' + $config.costants.hiddenIntentFieldId).val();
+        var widget = this.createRepoWidget(intent);
+        if(!this.isVisible(widget)) {
+            widget.classList.remove('hide');
+            $('#underWidgetLine').removeClass('hide');
         }    
     }
 
@@ -75,11 +21,11 @@ module.exports = class DomManipulator {
         if(!this.isVisible(intentBox)) {
             intentBox.classList.remove('hide');
         } 
-        $('#intentName').text(this.intentSlugToIntention[intent] + ' [slug: ' + intent + '].');
+        $('#intentName').text($config.intentSlugToOperations[intent]['intentMessage'] + ' [slug: ' + intent + '].');
     }
 
-    createRepoWidget() {
-        var existingWidget = document.getElementById('createrepo')
+    createRepoWidget(intent) {
+        var existingWidget = document.getElementById(intent)
         if(existingWidget) {
             return existingWidget;
         }
@@ -118,8 +64,6 @@ module.exports = class DomManipulator {
         var descriptionTextArea = document.createElement('textarea');
 
         var submitRepoCreate = document.createElement('button')
-
-        var line = document.createElement('div');
 
         // Add Attributes
         widgets.classList.add('card-group');
@@ -183,9 +127,6 @@ module.exports = class DomManipulator {
         submitRepoCreate.setAttribute('id', 'submitForm');
         submitRepoCreate.classList.add('btn', 'btn-primary');
 
-        line.classList.add('line');
-        line.setAttribute('id', 'underWidgetLine');
-
         // Add inner HTML
         header.innerHTML = "Create Repository";
         repoNamelabel.innerHTML = "Repository Name";
@@ -234,10 +175,9 @@ module.exports = class DomManipulator {
         cardBody.appendChild(header);
         cardBody.appendChild(form);
         
-        widgets.appendChild(createRepoWidget);
         createRepoWidget.appendChild(cardBody);
-
-        widgets.appendChild(line);
+        widgets.appendChild(createRepoWidget);
+        $('#createrepo').insertBefore($('#underWidgetLine'));
 
         this.createRepoWidgetCreated = true;
 
@@ -248,57 +188,15 @@ module.exports = class DomManipulator {
         $('#emptyCommandMsgDisplayer').click();
     }
 
-    populateWidgetWithRecastResponse() {
-
-    }
-
     populateWidgetWithGithubResponse() {
 
     }
 
     populateRecastData(widgetName, recastResponse) {
-        switch(widgetName) {
-            case "createrepo":
-                self.populateCreateRepoData(recastResponse);
-                break;
-            case "updaterepo":
-                app.updateRepository();
-                break;
-            case "viewrepos":
-                app.viewRepositories();
-                break;
-            case "deleterepo":
-                app.deleteRepository();
-                break;
-            case "createissue":
-                self.populateCreateIssueData(recastResponse);
-                break;
-            case "updateissue":
-                app.updateIssue();
-                break;
-            case "closeissue":
-                app.closeIssue();
-                break;
-            case "reopenissue":
-                app.reopenIssue();
-                break;
-            case "displayissue":
-                app.displayIssue();
-                break;
-            case "addissuecomment":
-                app.addIssueComment();
-                break;
-            case "displaylastcomment":
-                app.displayLastComment();
-                break;
-            case "addcollab":
-                app.addCollaborator();
-                break;
-            case "removecollab":
-                app.removeCollaborator();
-                break;
-            default:
-                console.log("default");
+        var requestMethod = $config.intentSlugToOperations[widgetName]['requestMethod'];
+        if(requestMethod == 'post') {
+            var operation = $config.intentSlugToOperations[widgetName]['populateDataOperation'];
+            this[operation](recastResponse);
         }
     }
 
@@ -313,10 +211,31 @@ module.exports = class DomManipulator {
 
     populateCreateIssueData(recastResponse) {
         var issueTitleTextField = document.getElementById('issueTitle');
-        if(issueTitleTextField && recastResponse && recastResponse.entities['git-repository'] && recastResponse.entities['git-repository'].length > 0 
-                && recastResponse.entities['git-repository']['0']['value']) {
-            var issueTitle = recastResponse.entities['git-repository']['0']['value'];
+        var issueRepositoryTextField = document.getElementById('issueRepository');
+        if(issueTitleTextField && recastResponse && recastResponse.entities['issue_title'] && recastResponse.entities['issue_title'].length > 0 
+                && recastResponse.entities['issue_title']['0']['value']) {
+            var issueTitle = recastResponse.entities['issue_title']['0']['value'];
             issueTitleTextField.value = issueTitle;
+        }
+        if(issueRepositoryTextField && recastResponse && recastResponse.entities['git-repository'] && recastResponse.entities['git-repository'].length > 0 
+                && recastResponse.entities['git-repository']['0']['value']) {
+            var repoName = recastResponse.entities['git-repository']['0']['value'];
+            issueRepositoryTextField.value = repoName;
+        }
+    }
+
+    populateAddCollaboratorData(recastResponse) {
+        var collaboratorNameTextField = document.getElementById('collaboratorName');
+        var repoForCollabTextField = document.getElementById('repoForCollab');
+        if(collaboratorNameTextField && recastResponse && recastResponse.entities['git_collaborator'] && recastResponse.entities['git_collaborator'].length > 0 
+                && recastResponse.entities['git_collaborator']['0']['value']) {
+            var collaboratorName = recastResponse.entities['git_collaborator']['0']['value'];
+            collaboratorNameTextField.value = collaboratorName;
+        }
+        if(repoForCollabTextField && recastResponse && recastResponse.entities['git-repository'] && recastResponse.entities['git-repository'].length > 0 
+                && recastResponse.entities['git-repository']['0']['value']) {
+            var repoName = recastResponse.entities['git-repository']['0']['value'];
+            repoForCollabTextField.value = repoName;
         }
     }
 
@@ -325,6 +244,20 @@ module.exports = class DomManipulator {
     }
 
     getDataFromFormAsJSON() {
+        var data = {};
+        var intent = $('#' + $config.costants.hiddenIntentFieldId).val();
+        var requestMethod = $config.intentSlugToOperations[intent]['requestMethod'];
+        if(requestMethod == 'post') {
+            if(intent) {
+                var operation = $config.intentSlugToOperations[intent]['getDataOperation'];
+                data = this[operation]();
+            }
+        }
+        return data;
+    }
+
+    getCreateRepoJson() {
+        var data = {};
         var request = {};
         if(this.isVisible(document.getElementById("createrepo"))) {
             request.name = document.getElementById("repositoryName").value;
@@ -334,24 +267,238 @@ module.exports = class DomManipulator {
             request.has_issues = document.getElementById("issuesChk").checked;
             request.has_wiki = document.getElementById("wikiChk").checked;
         }
-        return request;
+        data.request = request;
+        return data;
     }
 
-    addGitOperationHistory(response) {
-
+    getCreateIssueJson() {
+        var data = {};
+        data.urlParams = {};
+        var request = {};
+        if(this.isVisible(document.getElementById("createissue"))) {
+            request.title = document.getElementById("issueTitle").value;
+            request.body = document.getElementById("description").value;
+            request.assignees = document.getElementById("assignees").value ? document.getElementById("assignees").value.split(',') : [];
+            request.labels = document.getElementById("labels").value ? document.getElementById("labels").value.split(',') : [];
+            data.urlParams.repoName = document.getElementById("issueRepository").value;
+        }
+        data.request = request;
+        return data;
     }
+
+    getAddCollaboratorJson() {
+        var data = {};
+        data.urlParams = {};
+        if(this.isVisible(document.getElementById("addcollab"))) {
+            data.urlParams.collaborator = document.getElementById("collaboratorName").value;
+            data.urlParams.repoName = document.getElementById("repoForCollab").value;
+        }
+        return data;
+    }
+
+    addGitOperationHistory(data, type) {
+        var intent = $('#' + $config.costants.hiddenIntentFieldId).val();
+        var requestMethod = $config.intentSlugToOperations[intent].requestMethod;
+        var conversations = document.getElementById('conversations');
+        var table = undefined;
+        // Create Elements
+        var card = document.createElement('div');
+        var cardBody = document.createElement('div');
+        var cardTitle = document.createElement('h5');
+        var cardText = document.createElement('p');
+        var cardFooter = document.createElement('div');
+        var textMuted = document.createElement('small');
+        var underCardLine = document.createElement('div');
+
+        
+        // Add Attributes
+        card.classList.add('card', type);
+        cardBody.classList.add('card-body');
+        cardTitle.classList.add('card-title');
+        cardText.classList.add('card-text');
+        cardFooter.classList.add('card-footer');
+        textMuted.classList.add('text-muted');
+        underCardLine.classList.add('line');
+
+        var x = this.display_ct(0, textMuted);
+        if(type === 'command') {
+            // Add content
+            cardTitle.innerHTML = 'You Said';
+            cardText.innerHTML = data;
+            var repeat = document.createElement('a');
+            repeat.classList.add('btn', 'btn-info', 'float-right');
+            repeat.setAttribute('role', 'button');
+            repeat.setAttribute('href', '#');
+            repeat.setAttribute('id', 'btnRepeatCommand' + this.commandCardCounter++);
+            repeat.innerHTML = "Repeat";
+            cardText.appendChild(repeat)
+        } else if(type === "response") {
+            // Add content
+            cardTitle.innerHTML = 'Server Responded As..';
+            if(requestMethod == 'post') {
+                cardText.innerHTML = $config.intentSlugToOperations[intent]['cardMsg']  + "<a class='repoLink' href='" + data[$config.intentSlugToOperations[intent].cardDataUrl] + "'>" + this.getVariable(data, $config.intentSlugToOperations[intent].cardDataName) + "</a>";
+            } else if (requestMethod == 'get') {
+                cardText.innerHTML = $config.intentSlugToOperations[intent]['cardMsg'];
+                if(data && data.length && data.length > 0) {
+                    table = this.createRepoTable(data);   
+                }
+            }
+        } else {
+            cardTitle.innerHTML = 'Server Responded As..';
+            cardText.innerHTML = "Operation failed with status: " + type;
+        }
+
+        // Associations
+        cardBody.appendChild(cardTitle);
+        cardBody.appendChild(cardText);
+        cardFooter.appendChild(textMuted);
+        card.appendChild(cardBody);
+        if(table) { card.appendChild(table); }
+        card.appendChild(cardFooter);
+
+        conversations.insertBefore(underCardLine, conversations.firstChild);
+        conversations.insertBefore(card, conversations.firstChild);
+    }
+
+    getVariable(data, commaSeparatedValue) {
+        var arr = commaSeparatedValue.split(',');
+        for(var i = 0; i < arr.length; i++) {
+            data = data[arr[i]];
+        }
+        return data;
+    }
+
+    createRepoTable(data) {
+
+        // Create Elements
+        var table = document.createElement('table');
+        var thead = document.createElement('thead');
+        var tr_head = document.createElement('tr');
+        var th_1 = document.createElement('th');
+        var th_2 = document.createElement('th');
+        var th_3 = document.createElement('th');
+        var th_4 = document.createElement('th');
+        var th_5 = document.createElement('th');
+        var th_6 = document.createElement('th');
+        var th_7 = document.createElement('th');
+
+        // Add Attributes
+        table.classList.add('table', 'tabled-bordered', 'table-striped', 'table-hover');
+        thead.classList.add('thead-dark');
+        th_1.setAttribute('scope', 'col');
+        th_2.setAttribute('scope', 'col');
+        th_3.setAttribute('scope', 'col');
+        th_4.setAttribute('scope', 'col');
+        th_5.setAttribute('scope', 'col');
+        th_6.setAttribute('scope', 'col');
+        th_7.setAttribute('scope', 'col');
+        
+        // Add Inner HTML
+        th_1.innerHTML = "#";
+        th_2.innerHTML = "Repository Name";
+        th_3.innerHTML = "Repository ID";
+        th_4.innerHTML = "Created On";
+        th_5.innerHTML = "Created By";
+        th_6.innerHTML = "View Raw";
+        th_7.innerHTML = "Delete Repository";
+
+        // Associations
+        tr_head.appendChild(th_1);
+        tr_head.appendChild(th_2);
+        tr_head.appendChild(th_3);
+        tr_head.appendChild(th_4);
+        tr_head.appendChild(th_5);
+        tr_head.appendChild(th_6);
+        tr_head.appendChild(th_7);
+        thead.appendChild(tr_head);
+        table.appendChild(thead);
+
+
+        for(var i = 0; i < data.length; i++) {
+            var currentRepo = data[i];
+            // Create Elements
+            var tbody = document.createElement('tbody');
+            var tr_body = document.createElement('tr');
+            var th_vertical = document.createElement('th');
+            var td_1 = document.createElement('td');
+            var td_2 = document.createElement('td');
+            var td_3 = document.createElement('td');
+            var td_4 = document.createElement('td');
+            var td_5 = document.createElement('td');
+            var td_6 = document.createElement('td');
+
+            // Add Attributes
+            th_vertical.setAttribute('scope', 'row');
+            tr_body.setAttribute('id', 'repoRow' + i);
+            
+            // Add Inner HTML
+            th_vertical.innerHTML = i + 1;
+            td_1.innerHTML = currentRepo.name;
+            td_2.innerHTML = "<a href='" + currentRepo.html_url + "' class='repoLink'>" + currentRepo.id + "</a>";
+            td_3.innerHTML = currentRepo.created_at;
+            td_4.innerHTML = "<a href='" + currentRepo.owner.html_url + "' class='btn btn-info'>" + currentRepo.owner.login + "</a>";
+            td_5.innerHTML = "<a href='" + currentRepo.owner.url + "' class='btn btn-info'>View</a>";
+            td_6.innerHTML = "<a href='" + currentRepo.owner.html_url + "' class='btn btn-danger'>Delete</a>";
+
+            // Associations
+            tr_body.appendChild(th_vertical);
+            tr_body.appendChild(td_1);
+            tr_body.appendChild(td_2);
+            tr_body.appendChild(td_3);
+            tr_body.appendChild(td_4);
+            tr_body.appendChild(td_5);
+            tr_body.appendChild(td_6);
+            tbody.appendChild(tr_body);
+            table.appendChild(tbody);
+        }
+
+        return table;
+    } 
 
     toggleModals(response) {
+        var self = this;
         var promise = response.json();
-        $('#submitConfirm').hide();
+        var intent = $('#' + $config.costants.hiddenIntentFieldId).val();
+        $('#submitConfirm').addClass('hide');
+        $('#btnCancelConfirm').click();
         $('.modal-backdrop').removeClass('modal-backdrop');
-        $('#underWidgetLine').hide();
-        if(response && response.status && response.status === 201) {
-            $('#successAlert').show();
-            $('#createrepo').hide();
+        $('#underWidgetLine').addClass('hide');
+        $('#intentBox').addClass('hide');
+        if(response && response.status && (response.status === 201 || response.status === 200 || response.status === 204)) {
+            $('#successAlert').removeClass('hide');
+            $('#widgets').children().addClass('hide');
+            promise.then(function(body) {
+                $('#op-msg').text($config.intentSlugToOperations[intent]['successMessage']);
+                $('#successAlert').removeClass('hide');
+                self.addGitOperationHistory(body, "response");
+            })
+        } else {
+            $('#widgets').children().addClass('hide');
+            $('#dangerAlert').removeClass('hide');
+            self.addGitOperationHistory(response.status);
         }
-        promise.then(function(body) {
-            addGitOperationHistory(body);
-        })
+    }
+
+    display_ct (start, element) {
+        this.start = start;
+        this.element = element;
+        var days = Math.floor(this.start / 86400);
+        var hours = Math.floor((this.start - (days * 86400 ))/3600)
+        var minutes = Math.floor((this.start - (days * 86400 ) - (hours *3600 ))/60)
+        var secs = Math.floor((this.start - (days * 86400 ) - (hours *3600 ) - (minutes*60)))
+        var x = '';
+        if(days != 0) {
+            x = x + days + ' days';
+        }
+        if(hours != 0) {
+            x = x + hours + ' hours';
+        }
+        if(minutes != 0) {
+            x = x + minutes + ' minutes';
+        }
+        x = x + secs + ' seconds ago';
+        element.innerHTML = x;
+        this.start = this.start + 1;
+        // setTimeout(this['display_ct](this.start, this.element)', 1000 )
     }
 }

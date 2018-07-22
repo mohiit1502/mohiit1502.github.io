@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Webpack</title>
+    <title>Microbot</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">
@@ -14,9 +14,10 @@
 </head>
 
 <body>
+    <h2 id="microbot-body" style="display:none">Micorbot Body</h2>
     <div class="wrapper">
         <!-- Sidebar  -->
-        <nav id="sidebar">
+        <nav id="sidebar" class="active">
 
             <div class="sidebar-header">
                 <button type="button" id="sidebarCollapse" class="btn btn-info">
@@ -31,28 +32,17 @@
                     <!-- data-toggle="collapse"  -->
                     <a href="#homeSubmenu">
                         <i class="fas fa-home"></i>
-                        <span class="hideable">Home</span>
+                        <span class="hideable hide">Home</span>
                     </a>
-                    <!-- <ul class="collapse list-unstyled" id="homeSubmenu">
-                        <li>
-                            <a href="#">Home 1</a>
-                        </li>
-                        <li>
-                            <a href="#">Home 2</a>
-                        </li>
-                        <li>
-                            <a href="#">Home 3</a>
-                        </li>
-                    </ul> -->
                 </li>
                 <li>
                     <a href="#">
                         <i class="fas fa-briefcase"></i>
-                        <span class="hideable">About</span>
+                        <span class="hideable hide">About</span>
                     </a>
                     <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <i class="fas fa-copy"></i>
-                        <span class="hideable">Tasks</span>
+                        <span class="hideable hide">Tasks</span>
                     </a>
                     <ul class="collapse list-unstyled" id="pageSubmenu">
                         <li>
@@ -69,19 +59,19 @@
                 <li>
                     <a href="#">
                         <i class="fas fa-image"></i>
-                        <span class="hideable">Favorites</span>
+                        <span class="hideable hide">Favorites</span>
                     </a>
                 </li>
                 <li>
                     <a href="#">
                         <i class="fas fa-question"></i>
-                        <span class="hideable">FAQ</span>
+                        <span class="hideable hide">FAQ</span>
                     </a>
                 </li>
                 <li>
                     <a href="#">
                         <i class="fas fa-paper-plane"></i>
-                        <span class="hideable">Contact</span>
+                        <span class="hideable hide">Contact</span>
                     </a>
                 </li>
             </ul>
@@ -104,9 +94,7 @@
                 </div>
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <div class="container-fluid">
-                        <form id="bot-cli" class="navbar-form" role="search">
-                            <input type="text" class="form-control" placeholder="What you need..." name="command" id="command">
-                        </form>
+                        <input type="text" class="form-control" placeholder="What you need..." name="command" id="command">
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
                                 <li class="nav-item">
@@ -128,72 +116,161 @@
                         </div>
                     </div>
                 </nav>
+                <input type="hidden" id="intentHidden">
             </div>
-            <div>
-                <h2>Placeholder header</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                    magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                    commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                    nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-                    anim id est laborum.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                    magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                    commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                    nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-                    anim id est laborum.</p>
+            <!-- Alerts -->
+            <div class="alert alert-success alert-dismissible fade show hide good" id="successAlert" role="alert">
+                <strong>Success! </strong><span id="op-msg"> Repository Added!</span>
+                <button type="button" id="hideSuccessAlert" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-
-            <div class="line"></div>
-
-            <h2>Lorem Ipsum Dolor</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-            <div class="line"></div>
-
-            <h2>Lorem Ipsum Dolor</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-            <div class="line"></div>
-
-            <h3>Lorem Ipsum Dolor</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <div class="alert alert-danger alert-dismissible hide good" id="dangerAlert" role="alert">
+                <button type="button" id="hideDangerAlert" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>Oh snap!</strong> Change a few things up and try submitting again.
+            </div>
+            <div class="alert alert-info alert-dismissible hide good" id="intentBox" role="alert">
+                <button type="button" id="hideInfoAlert" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>I understand you intend to: &nbsp;&nbsp;</strong><span id="intentName"></span>&nbsp;&nbsp;If not, please choose the correct option: 
+            </div>
+            <!-- Widgets -->
+            <div class="card-group" id="widgets">
+                <div class="card hide widget good" id="createissue">
+                    <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                    <div class="card-body">
+                        <h5 class="card-title">Create Issue</h5>
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="issueTitle">Issue Title</label>
+                                    <input type="text" class="form-control" id="issueTitle" placeholder="Issue title" required>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="issueRepository">Issue Repository</label>
+                                    <input type="text" class="form-control" id="issueRepository" placeholder="Issue's Repository here" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="assignees">Assignees</label>
+                                    <input type="text" class="form-control" id="assignees" placeholder="Comma Separated user IDs...">
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="labels">Issue Labels</label>
+                                    <input type="text" class="form-control" id="labels" placeholder="Comma Separated Labels...">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Issue Description:</label>
+                                <textarea class="form-control" rows="3" id="description"></textarea>
+                            </div>
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitConfirm" data-target="#submitConfirm">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card hide widget good" id="addcollab">
+                    <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                    <div class="card-body">
+                        <h5 class="card-title">Create Collaborator</h5>
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="collaboratorName">Collaborator Name</label>
+                                    <input type="text" class="form-control" id="collaboratorName" placeholder="Collaborator ID" required>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="repoForCollab">Repository Name</label>
+                                    <input type="text" class="form-control" id="repoForCollab" placeholder="Repository To Add collaborator on ...." required>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitAddCollab   " data-target="#submitConfirm">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="viewrepos" class="card hide widget good">
+                    <div class="card-body">
+                        <h5 class="card-title">View Repositories</h5>
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <p>View Repositories for the user mohiit1502?</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitAddCollab   " data-target="#submitConfirm">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="line hide" id="underWidgetLine"></div>
+            </div>
+            <!-- Modals -->
+            <div class="modal" id="submitConfirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Confirm!</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to submit?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="btnCancelConfirm" data-dismiss="modal">Cancel</button>
+                            <button id="submitGitData" type="button" data-dimsiss="modal" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="emptyCommandMessageModal" tabindex="-1" role="dialog" aria-labelledby="emptyCommandMessageModalTitle"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="emptyCommandMessageModalTitle">No Command!</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Please type some relevant words in the command box.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button style="display: none" id="emptyCommandMsgDisplayer" type="submit" data-toggle="modal" data-target="#emptyCommandMessageModal"></button>
+            <!-- Cards -->
+            <div class="card-group" id="conversations">
+                <div class="card">
+                    <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Card title
+                            <a class="close" href="#"><h6>x</h6></a>
+                        </h5>
+                        <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Commanded 1 mins ago</small>
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
         </div>
     </div>
 
-    <!-- jQuery CDN - Slim version (=without AJAX) -->
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-    <!-- Popper.JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
         crossorigin="anonymous"></script>
-    <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
-
-    <script>
-        $(document).ready(function () {
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-                $('.hideable').toggleClass('hide');
-            });
-            $('#content nav div.collapse li a.nav-link i.far.fa-star').hover(function () {
-                $('#content nav div.collapse li a.nav-link i.far.fa-star').toggleClass('fas');
-            });
-            $('#content nav div.collapse li a.nav-link i.far.fa-trash-alt').hover(function () {
-                $('#content nav div.collapse li a.nav-link i.far.fa-trash-alt').toggleClass('fas');
-            });
-            $('#content nav div.collapse li a.nav-link i.far.fa-paper-plane').hover(function () {
-                $('#content nav div.collapse li a.nav-link i.far.fa-paper-plane').toggleClass('fas');
-            });
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/jstree.min.js"></script>
 <script type="text/javascript" src="./bundle.js"></script></body>
 
 </html>

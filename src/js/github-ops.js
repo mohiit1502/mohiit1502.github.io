@@ -30,11 +30,12 @@ module.exports = class Github {
             }
         )
         .then(function(response) {
-            response.json().then(function(body){
-                repositories = body; 
-                console.log(repositories); 
-                return repositories;
-            });
+            // response.json().then(function(body){
+            //     repositories = body; 
+            //     console.log(repositories); 
+            //     return repositories;
+            // });
+            dom.toggleModals(response);
         })
         .catch(error => console.error('Fetch Error =\n', error));
         return repositories;
@@ -89,8 +90,8 @@ module.exports = class Github {
         .catch(error => console.error('Fetch Error =\n', error));  
     }
 
-    createIssue(newIssueJson) {
-        let url = 'https://api.github.com/repos/mohiit1502/stack_route_prj7/issues';
+    createIssue(newIssueJson, repoName) {
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues';
         fetch(url, {
                 method: "POST",
                 headers: {
@@ -100,7 +101,9 @@ module.exports = class Github {
                 body: JSON.stringify(newIssueJson)
             }
         )
-        .then(response => response.json())
+        .then(function(response) {
+            dom.toggleModals(response);
+        })
         .catch(error => console.error('Fetch Error =\n', error)); 
     }
 
@@ -265,7 +268,9 @@ module.exports = class Github {
                 }
             }
         )
-        .then(response => response.json())
+        .then(function(response) {
+            dom.toggleModals(response);
+        })
         .catch(error => console.error('Fetch Error =\n', error)); 
     }
 
