@@ -19,8 +19,11 @@ module.exports = class Github {
             }
         )
         .then(function(response) {
+            console.log("token get success");
             response.json().then(function(body){
+                console.log(response);
                 repositories = body; 
+                console.log(body);
                 console.log(repositories); 
                 return repositories;
             });
