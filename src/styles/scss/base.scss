@@ -263,6 +263,20 @@ a.article:hover {
         color: #bcb !important;
     }
 }
+
+@media(min-width: 576px) {
+    .card-group>.card:first-child {
+        border-top-right-radius: .25rem;
+        border-bottom-right-radius: .25rem;
+    }
+    .card-group>.card:not(:first-child):not(:last-child):not(:only-child) {
+        border-radius: .25rem;
+    }
+    .card-group>.card:last-child {
+        border-top-left-radius: .25rem;
+        border-bottom-left-radius: .25rem;
+    }
+}
 /* -------------------------------------------------
 ADDITIONS
 --------------------------------------------------*/
@@ -337,6 +351,22 @@ ADDITIONS
   padding: 0.2em;
 }
 
+.loader {
+    border: 0px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 2px solid #3498db;
+    border-right: 2px solid #3498db;
+    width: 20px;
+    height: 20px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
 /* --------------------------------------------------
   OVERRIDES
   --------------------------------------------------*/
@@ -372,17 +402,3 @@ ADDITIONS
   .ml-auto {
       margin-left: 0!important;
   }
-
-@media(min-width: 576px) {
-    .card-group>.card:first-child {
-        border-top-right-radius: .25rem;
-        border-bottom-right-radius: .25rem;
-    }
-    .card-group>.card:not(:first-child):not(:last-child):not(:only-child) {
-        border-radius: .25rem;
-    }
-    .card-group>.card:last-child {
-        border-top-left-radius: .25rem;
-        border-bottom-left-radius: .25rem;
-    }
-}

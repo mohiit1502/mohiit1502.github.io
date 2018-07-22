@@ -9,6 +9,14 @@ module.exports = class Microbot {
         this.clientSecret = '7e9a33d05ffdb36b4a498140bb9bb06d62de4f0e';
     }
 
+    getToken(code) {
+        $github.getToken({
+            'client_id': 'f6f649a1fe2dfea082ba',
+            'client_secret': '7e9a33d05ffdb36b4a498140bb9bb06d62de4f0e',
+            'code': code 
+        });
+    }
+
     viewRepositories() {
         return $github.viewRepositories();
     }

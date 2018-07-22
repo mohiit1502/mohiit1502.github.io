@@ -10,8 +10,24 @@ module.exports = class Github {
         this.authorizationToken =  "token " + config.gitToken;
     }
 
-    getToken() {
-
+    getToken(getTokenRequest) {
+        var token = '';
+        let url = 'https://github.com/login/oauth/access_token';
+        fetch(url, {
+                method: "POST",
+                body: JSON.stringify(getTokenRequest)
+            }
+        )
+        .then(function(response) {
+            response.json().then(function(body){
+                repositories = body; 
+                console.log(repositories); 
+                return repositories;
+            });
+            // dom.toggleModals(response);
+        })
+        .catch(error => console.error('Fetch Error =\n', error));
+        return repositories;
     }
 
     authenticate() {

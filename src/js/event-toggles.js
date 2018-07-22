@@ -21,16 +21,16 @@ module.exports = $(document).ready(function () {
     $('#content nav div.collapse li a.nav-link i.far.fa-paper-plane').hover(function () {
         $('#content nav div.collapse li a.nav-link i.far.fa-paper-plane').toggleClass('fas');
     });
-    $('#command').keyup(function(e){
+    $('#command').keyup(function (e) {
         var code = (e.keyCode ? e.keyCode : e.which);
-        if(code == 13) {
+        if (code == 13) {
             $('#widgets').children().addClass('hide');
             $('#successAlert').addClass('hide');
             $('#dangetAlert').addClass('hide');
             $('#intentBox').addClass('hide');
             var command = document.getElementById('command').value;
-            if(command) {
-                var text = { "text": command};
+            if (command) {
+                var text = { "text": command };
                 recastclient.getAndCallProcessIntent(command, text);
                 dom.addGitOperationHistory(command, 'command');
             } else {
@@ -38,29 +38,47 @@ module.exports = $(document).ready(function () {
             }
         }
     });
-    $('#btnSubmitConfirm').on('click', function() {
+    $('#btnSubmitConfirm').on('click', function () {
         $('#submitConfirm').removeClass('hide');
-    })
-    $('#submitGitData').on('click', function() {
+    });
+    $('#submitGitData').on('click', function () {
         var data = dom.getDataFromFormAsJSON();
         var intent = $('#' + $config.costants.hiddenIntentFieldId).val();
-        if(intent) {
+        if (intent) {
             var operation = $config.intentSlugToOperations[intent]['githubOperation'];
             app[operation](data);
         }
-    })
-    $("#hideInfoAlert").on('click', function(){
+    });
+    $("#hideInfoAlert").on('click', function () {
         $('#intentBox').addClass('hide');
     })
-    $("#hideSuccessAlert").on('click', function(){
+    $("#hideSuccessAlert").on('click', function () {
         $('#successAlert').addClass('hide');
-    })
-    $('.close').click(function(){
+    });
+    $('.close').click(function () {
         var $target = $(this).closest('.card');
-        $target.hide('slow', function(){ $target.remove(); });
-      })
-    $("#hideDangerAlert").on('click', function(){
+        $target.hide('slow', function () { $target.remove(); });
+    });
+    $("#hideDangerAlert").on('click', function () {
         $('#dangerAlert').addClass('hide');
-    })
+    });
+
+    var urlParam = getUrlParameter('code');
+    app.getToken(urlParam);
 
 });
+
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
