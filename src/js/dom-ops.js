@@ -1,4 +1,6 @@
 const $config = require('./config.js');
+const GithubHelper = require('./helper.js');
+const githubHelper = new GithubHelper();
 
 module.exports = class DomManipulator {
 
@@ -193,9 +195,9 @@ module.exports = class DomManipulator {
     }
 
     populateRecastData(widgetName, recastResponse) {
-        var requestMethod = $config.intentSlugToOperations[widgetName]['requestMethod'];
-        if(requestMethod == 'post') {
-            var operation = $config.intentSlugToOperations[widgetName]['populateDataOperation'];
+        // var requestMethod = $config.intentSlugToOperations[widgetName]['requestMethod'];
+        var operation = $config.intentSlugToOperations[widgetName]['populateDataOperation'];
+        if(typeof this[operation] === "function") {
             this[operation](recastResponse);
         }
     }
@@ -216,6 +218,21 @@ module.exports = class DomManipulator {
                 && recastResponse.entities['issue_title']['0']['value']) {
             var issueTitle = recastResponse.entities['issue_title']['0']['value'];
             issueTitleTextField.value = issueTitle;
+        }
+        if(issueRepositoryTextField && recastResponse && recastResponse.entities['git-repository'] && recastResponse.entities['git-repository'].length > 0 
+                && recastResponse.entities['git-repository']['0']['value']) {
+            var repoName = recastResponse.entities['git-repository']['0']['value'];
+            issueRepositoryTextField.value = repoName;
+        }
+    }
+
+    populateCloseIssueData(recastResponse) {
+        var issueNumberTextField = document.getElementById('issueNumerToClose');
+        var issueRepositoryTextField = document.getElementById('repoForIssueClose');
+        if(issueNumberTextField && recastResponse && recastResponse.entities['issue_id'] && recastResponse.entities['issue_id'].length > 0 
+                && recastResponse.entities['issue_id']['0']['value']) {
+            var issueNumber = recastResponse.entities['issue_id']['0']['value'];
+            issueNumberTextField.value = issueNumber;
         }
         if(issueRepositoryTextField && recastResponse && recastResponse.entities['git-repository'] && recastResponse.entities['git-repository'].length > 0 
                 && recastResponse.entities['git-repository']['0']['value']) {
@@ -260,6 +277,21 @@ module.exports = class DomManipulator {
         }
     }
 
+    populateDisplayCommentData(recastResponse) {
+        var issueNumberTextField = document.getElementById('issueNumberForCommentView');
+        var issueRepositoryTextField = document.getElementById('repoForCommentView');
+        if(issueNumberTextField && recastResponse && recastResponse.entities['issue_id'] && recastResponse.entities['issue_id'].length > 0 
+                && recastResponse.entities['issue_id']['0']['value']) {
+            var issueNumber = recastResponse.entities['issue_id']['0']['value'];
+            issueNumberTextField.value = issueNumber;
+        }
+        if(issueRepositoryTextField && recastResponse && recastResponse.entities['git-repository'] && recastResponse.entities['git-repository'].length > 0 
+                && recastResponse.entities['git-repository']['0']['value']) {
+            var repoName = recastResponse.entities['git-repository']['0']['value'];
+            issueRepositoryTextField.value = repoName;
+        }
+    }
+
     isVisible(element) {
         return element ? !element.classList.contains('hide') : false;
     }
@@ -268,9 +300,9 @@ module.exports = class DomManipulator {
         var data = {};
         var intent = $('#' + $config.costants.hiddenIntentFieldId).val();
         var requestMethod = $config.intentSlugToOperations[intent]['requestMethod'];
-        if(requestMethod == 'post') {
-            if(intent) {
-                var operation = $config.intentSlugToOperations[intent]['getDataOperation'];
+        if(intent) {
+            var operation = $config.intentSlugToOperations[intent]['getDataOperation'];
+            if(typeof this[operation] == "function") {
                 data = this[operation]();
             }
         }
@@ -340,11 +372,22 @@ module.exports = class DomManipulator {
         return data;
     }
 
+    getDisplayCommentJson() {
+        var data = {};
+        data.urlParams = {};
+        if(this.isVisible(document.getElementById("displaylastcomment"))) {
+            data.urlParams.issueId = document.getElementById("issueNumberForCommentView").value;
+            data.urlParams.repoName = document.getElementById("repoForCommentView").value;
+        }
+        return data;
+    }
+
     addGitOperationHistory(data, type) {
         var intent = $('#' + $config.costants.hiddenIntentFieldId).val();
         var requestMethod = $config.intentSlugToOperations[intent].requestMethod;
         var conversations = document.getElementById('conversations');
         var table = undefined;
+        var comment = undefined;
         // Create Elements
         var card = document.createElement('div');
         var cardBody = document.createElement('div');
@@ -391,7 +434,12 @@ module.exports = class DomManipulator {
             } else if (requestMethod == 'get') {
                 cardText.innerHTML = $config.intentSlugToOperations[intent]['cardMsg'];
                 if(data && data.length && data.length > 0) {
-                    table = this.createRepoTable(data);   
+                    if(intent === "viewrepo") {
+                        table = this.createRepoTable(data);   
+                    }
+                    else if(intent === "displaylastcomment") {
+                        comment = this.createCommentBody(data);
+                    }
                 }
             }
         } else {
@@ -404,6 +452,7 @@ module.exports = class DomManipulator {
         cardTitle.appendChild(closeAnchor);
         cardBody.appendChild(cardTitle);
         cardBody.appendChild(cardText);
+        if(comment) { cardBody.appendChild(comment); }
         cardFooter.appendChild(textMuted);
         card.appendChild(cardBody);
         if(table) { card.appendChild(table); }
@@ -508,6 +557,14 @@ module.exports = class DomManipulator {
         return table;
     } 
 
+    createCommentBody(data) {
+        var commentPara = document.createElement('p');
+        var lastComment = githubHelper.getLatestComment(data);
+        commentPara.classList.add('card-text');
+        commentPara.innerHTML = "<strong style='color:black'>COMMENT:</strong> <i>" + lastComment + "</i>";
+        return commentPara;
+    }
+
     concealCodeInUrl() {
         window.location = "http://localhost:8080";
     }
@@ -528,13 +585,16 @@ module.exports = class DomManipulator {
                 $('#op-msg').text($config.intentSlugToOperations[intent]['successMessage']);
                 $('#successAlert').removeClass('hide');
                 self.addGitOperationHistory(body, "response");
+                // clear intent
+                $('#' + $config.costants.hiddenIntentFieldId).val('');
             })
         } else {
             $('#widgets').children().addClass('hide');
             $('#dangerAlert').removeClass('hide');
             self.addGitOperationHistory(response.status);
+            // clear intent
+            $('#' + $config.costants.hiddenIntentFieldId).val('');
         }
-        $('#' + $config.costants.hiddenIntentFieldId).val('');
     }
 
     display_ct (start, element) {

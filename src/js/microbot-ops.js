@@ -104,8 +104,10 @@ module.exports = class Microbot {
         $github.addIssueComment(requestJson, repoName, issueId);
     }
 
-    displayLastComment() {
-        return $github.displayLastComment();
+    displayLastComment(requestData) {
+        var repoName = requestData.urlParams.repoName;
+        var issueId = requestData.urlParams.issueId;
+        return $github.displayLastComment(repoName, issueId);
     }
 
     addCollaborator(requestData) {

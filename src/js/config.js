@@ -33,7 +33,7 @@ module.exports = {
             "showWidgetOperation": "showCloseIssueWidget",
             "populateDataOperation": "populateCloseIssueData",
             "successMessage": "Issue Closed!",
-            "cardMsg": "Issue Closed as requested!",
+            "cardMsg": "Issue Closed as requested, closed issue available at: ",
             "cardDataUrl": "html_url",
             "cardDataName": "title"
         },
@@ -46,6 +46,18 @@ module.exports = {
             "populateDataOperation": "populateAddCommentData",
             "successMessage": "Comment Added!",
             "cardMsg": "Comment Added as Requested, view here: ",
+            "cardDataUrl": "html_url",
+            "cardDataName": "title"
+        },
+        'displaylastcomment' : {
+            "requestMethod": 'get',
+            "intentMessage": "Display last comment of an issue in Github",
+            "getDataOperation": "getDisplayCommentJson",
+            "githubOperation": "displayLastComment",
+            "showWidgetOperation": "showDisplayCommentWidget",
+            "populateDataOperation": "populateDisplayCommentData",
+            "successMessage": "Comment Retrieved!",
+            "cardMsg": "Please find requested comment below: ",
             "cardDataUrl": "html_url",
             "cardDataName": "title"
         },

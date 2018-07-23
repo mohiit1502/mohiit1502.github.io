@@ -234,8 +234,6 @@ module.exports = class Github {
     }
 
     displayLastComment(repoName, issueNumber) {
-        repoName = "stack_route_prj7";
-        issueNumber = 2;
         let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues/' + issueNumber + "/comments";
         var comments = [];
         var latestComment = "";
@@ -248,13 +246,13 @@ module.exports = class Github {
             }
         )
         .then(function(response) {
-            response.json().then(function(body){
-                comments = body;
-                latestComment = githubHelper.getLatestComment(comments);
-                console.log(comments);
-                console.log(latestComment); 
-                return latestComment;
-            });
+            dom.toggleModals(response);
+            // response.json().then(function(body){
+            //     comments = body;
+            //     latestComment = githubHelper.getLatestComment(comments);
+            //     console.log(comments);
+            //     console.log(latestComment); 
+            // });
         })
         .catch(error => console.error('Fetch Error =\n', error)); 
     }
