@@ -8,6 +8,8 @@ const $config = require('./config.js');
 
 
 module.exports = $(document).ready(function () {
+    // console.log('test');
+    app.setToken();
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
         $('.hideable').toggleClass('hide');
@@ -32,7 +34,6 @@ module.exports = $(document).ready(function () {
             if (command) {
                 var text = { "text": command };
                 recastclient.getAndCallProcessIntent(command, text);
-                dom.addGitOperationHistory(command, 'command');
             } else {
                 dom.showEmptyCommandMessage();
             }
@@ -55,30 +56,26 @@ module.exports = $(document).ready(function () {
     $("#hideSuccessAlert").on('click', function () {
         $('#successAlert').addClass('hide');
     });
-    $('.close').click(function () {
+    $('#conversations').on('click', '.close', function () {
         var $target = $(this).closest('.card');
+        var line = $target.next();
         $target.hide('slow', function () { $target.remove(); });
+        line.hide('slow', function () { line.remove(); });
     });
     $("#hideDangerAlert").on('click', function () {
         $('#dangerAlert').addClass('hide');
     });
-
-    var urlParam = getUrlParameter('code');
-    app.getToken(urlParam);
-
-});
-
-var getUrlParameter = function getUrlParameter(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
-
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
-        }
+    $('#git_bridge').on('click', function() {
+        window.location.href = 'https://github.com/login/oauth/authorize?scope=user:email:repo&client_id=f6f649a1fe2dfea082ba';
+        // var user = app.getCurrentUser();
+        // if(user) {
+        //     window.location.href = './../continue.html'
+        // } else {
+        //     window.location.href = 'https://github.com/login/oauth/authorize?scope=user:email:repo&client_id=f6f649a1fe2dfea082ba';
+        // }
+    })
+    if(window.location.href.match(/\?code=(.*)/) ) {
+        var code = window.location.href.match(/\?code=(.*)/)[1];
+        app.getToken(code);
     }
-};
+});

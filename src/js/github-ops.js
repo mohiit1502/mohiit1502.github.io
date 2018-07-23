@@ -3,6 +3,9 @@ const GithubHelper = require('./helper.js');
 const githubHelper = new GithubHelper();
 const DomManipulator = require('./dom-ops.js');
 const dom = new DomManipulator();
+const PersistentOps = require('./persistent-ops.js');
+const persistentOps = new PersistentOps();
+
 
 module.exports = class Github {
 
@@ -10,33 +13,41 @@ module.exports = class Github {
         this.authorizationToken =  "token " + config.gitToken;
     }
 
-    getToken(getTokenRequest) {
+    getToken(code) {
         var token = '';
-        let url = 'https://cors-anywhere.herokuapp.com/https://github.com/login/oauth/access_token';
-        fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8",
-                    "Application": "application/json; charset=utf-8"
-                },
-                body: JSON.stringify(getTokenRequest)
-            }
-        )
-        .then(function(response) {
-            console.log("token get success");
-            response.json().then(function(body){
-                console.log(response);
-                token = body.access_token; 
-                console.log(body);
-                console.log(token); 
-                return token;
-            });
-            // dom.toggleModals(response);
-        })
-        .catch(error => console.error('Fetch Error =\n', error));
+        self = this;
+        $.getJSON('http://localhost:9999/authenticate/' + code, function(data) {
+            console.log(data.token);
+            token = data.token;
+            // set cookie here
+            persistentOps.setCookie('gitToken', token, 30);
+            // self.authorizationToken = "token " + persistentOps.getCookie('gitToken');
+            dom.concealCodeInUrl();
+        });
         return token;
     }
 
+    getCurrentUser() {
+        var repositories = '';
+        let url = 'https://api.github.com/user/';
+        fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                }
+            }
+        )
+        .then(function(response) {
+            response.json().then(function(body){
+                repositories = body; 
+                console.log(repositories); 
+                return repositories;
+            });
+            dom.toggleModals(response);
+        })
+        .catch(error => console.error('Fetch Error =\n', error));
+        return repositories;
+    }
     authenticate() {
 
     }
@@ -148,8 +159,6 @@ module.exports = class Github {
     }
 
     closeIssue(closeIssueJson, repoName, issueNumber) {
-        repoName = 'stack_route_prj7';
-        issueNumber = 2;
         let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues/' + issueNumber;
         fetch(url, {
                 method: "PATCH",
@@ -160,7 +169,9 @@ module.exports = class Github {
                 body: JSON.stringify(closeIssueJson)
             }
         )
-        .then(response => response.json())
+        .then(function(response) {
+            dom.toggleModals(response);
+        })
         .catch(error => console.error('Fetch Error =\n', error)); 
     }
 
@@ -205,10 +216,8 @@ module.exports = class Github {
         return issues;
     }
 
-    addIssueComment(commentBodyJson, repoName, issueNumber) {
-        repoName = "stack_route_prj7";
-        issueNumber = 2;
-        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues/' + issueNumber + "/comments";
+    addIssueComment(commentBodyJson, repoName, issueId) {
+        let url = 'https://api.github.com/repos/mohiit1502/' + repoName + '/issues/' + issueId + "/comments";
         fetch(url, {
                 method: "POST",
                 headers: {
@@ -218,7 +227,9 @@ module.exports = class Github {
                 body: JSON.stringify(commentBodyJson)
             }
         )
-        .then(response => response.json())
+        .then(function(response) {
+            dom.toggleModals(response);
+        })
         .catch(error => console.error('Fetch Error =\n', error)); 
     }
 

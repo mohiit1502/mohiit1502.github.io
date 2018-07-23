@@ -18,6 +18,10 @@ module.exports = {
             template: './public/index.html'
             // template: './test.html'
         })
+        // new HtmlWebpackPlugin({
+        //     template: './public/login.html'
+        //     // template: './test.html'
+        // })
     ],
     mode: 'development'
 };

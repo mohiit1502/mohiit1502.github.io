@@ -1,5 +1,7 @@
 const Github = require('./github-ops.js');
 const $github = new Github()
+const PersistentOps = require('./persistent-ops.js');
+const persistentOps = new PersistentOps();
 
 module.exports = class Microbot {
 
@@ -10,11 +12,15 @@ module.exports = class Microbot {
     }
 
     getToken(code) {
-        $github.getToken({
-            'client_id': 'f6f649a1fe2dfea082ba',
-            'client_secret': '7e9a33d05ffdb36b4a498140bb9bb06d62de4f0e',
-            'code': code 
-        });
+        $github.getToken(code);
+    }
+
+    setToken() {
+        $github.authorizationToken = "token " + persistentOps.getCookie('gitToken');
+    }
+
+    getCurrentUser() {
+        $github.getCurrentUser();
     }
 
     viewRepositories() {
@@ -72,11 +78,12 @@ module.exports = class Microbot {
         });
     }
 
-    closeIssue() {
+    closeIssue(requestData) {
+        var repoName = requestData.urlParams.repoName;
+        var issueId = requestData.urlParams.issueId;
         $github.closeIssue({
-            "milestone": 1,
             "state": "close",
-        });
+        }, repoName, issueId);
     }
 
     displayIssue() {
@@ -90,10 +97,11 @@ module.exports = class Microbot {
         })
     }
 
-    addIssueComment() {
-        $github.addIssueComment({
-            "body": "This is another test issue comment"
-        });
+    addIssueComment(requestData) {
+        var requestJson = requestData.request;
+        var repoName = requestData.urlParams.repoName;
+        var issueId = requestData.urlParams.issueId;
+        $github.addIssueComment(requestJson, repoName, issueId);
     }
 
     displayLastComment() {

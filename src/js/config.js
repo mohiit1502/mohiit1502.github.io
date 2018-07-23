@@ -25,8 +25,32 @@ module.exports = {
             "cardDataUrl": "html_url",
             "cardDataName": "title"
         },
+        'closeissue' : {
+            "requestMethod": 'post',
+            "intentMessage": "Close an issue in Github",
+            "getDataOperation": "getCloseIssueJson",
+            "githubOperation": "closeIssue",
+            "showWidgetOperation": "showCloseIssueWidget",
+            "populateDataOperation": "populateCloseIssueData",
+            "successMessage": "Issue Closed!",
+            "cardMsg": "Issue Closed as requested!",
+            "cardDataUrl": "html_url",
+            "cardDataName": "title"
+        },
+        'addissuecomment' : {
+            "requestMethod": 'post',
+            "intentMessage": "Add a comment on an issue in Github",
+            "getDataOperation": "getAddCommentJson",
+            "githubOperation": "addIssueComment",
+            "showWidgetOperation": "showAddCommentWidget",
+            "populateDataOperation": "populateAddCommentData",
+            "successMessage": "Comment Added!",
+            "cardMsg": "Comment Added as Requested, view here: ",
+            "cardDataUrl": "html_url",
+            "cardDataName": "title"
+        },
         'addcollab' : {
-            "Method": 'post',
+            "requestMethod": 'post',
             "intentMessage": "Add a collaborator",
             "getDataOperation": "getAddCollaboratorJson",
             "githubOperation": "addCollaborator",

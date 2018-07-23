@@ -239,6 +239,27 @@ module.exports = class DomManipulator {
         }
     }
 
+    populateAddCommentData(recastResponse) {
+        var repoForIssueCommentTextField = document.getElementById('repoForIssueComment');
+        var issueNumberTextField = document.getElementById('issueNumber');
+        var issueCommentTextArea = document.getElementById('issueComment');
+        if(repoForIssueCommentTextField && recastResponse && recastResponse.entities['git-repository'] && recastResponse.entities['git-repository'].length > 0 
+                && recastResponse.entities['git-repository']['0']['value']) {
+            var repoForIssueComment = recastResponse.entities['git-repository']['0']['value'];
+            repoForIssueCommentTextField.value = repoForIssueComment;
+        }
+        if(issueNumberTextField && recastResponse && recastResponse.entities['issue_id'] && recastResponse.entities['issue_id'].length > 0 
+                && recastResponse.entities['issue_id']['0']['value']) {
+            var issueNumber = recastResponse.entities['issue_id']['0']['value'];
+            issueNumberTextField.value = issueNumber;
+        }
+        if(issueCommentTextArea && recastResponse && recastResponse.entities['issue_comment'] && recastResponse.entities['issue_comment'].length > 0 
+                && recastResponse.entities['issue_comment']['0']['value']) {
+            var issueComment = recastResponse.entities['issue_comment']['0']['value'];
+            issueCommentTextArea.value = issueComment ;
+        }
+    }
+
     isVisible(element) {
         return element ? !element.classList.contains('hide') : false;
     }
@@ -286,6 +307,16 @@ module.exports = class DomManipulator {
         return data;
     }
 
+    getCloseIssueJson() {
+        var data = {};
+        data.urlParams = {};
+        if(this.isVisible(document.getElementById("closeissue"))) {
+            data.urlParams.issueId = document.getElementById("issueNumerToClose").value;
+            data.urlParams.repoName = document.getElementById("repoForIssueClose").value;
+        }
+        return data;
+    }
+
     getAddCollaboratorJson() {
         var data = {};
         data.urlParams = {};
@@ -293,6 +324,19 @@ module.exports = class DomManipulator {
             data.urlParams.collaborator = document.getElementById("collaboratorName").value;
             data.urlParams.repoName = document.getElementById("repoForCollab").value;
         }
+        return data;
+    }
+
+    getAddCommentJson() {
+        var data = {};
+        data.urlParams = {};
+        var request = {};
+        if(this.isVisible(document.getElementById("addissuecomment"))) {
+            request.body = document.getElementById('issueComment').value;
+            data.urlParams.issueId = document.getElementById("issueNumber").value;
+            data.urlParams.repoName = document.getElementById("repoForIssueComment").value;
+        }
+        data.request = request;
         return data;
     }
 
@@ -305,6 +349,8 @@ module.exports = class DomManipulator {
         var card = document.createElement('div');
         var cardBody = document.createElement('div');
         var cardTitle = document.createElement('h5');
+        var closeAnchor = document.createElement('a');
+        var closeHeader = document.createElement('h6');
         var cardText = document.createElement('p');
         var cardFooter = document.createElement('div');
         var textMuted = document.createElement('small');
@@ -315,10 +361,15 @@ module.exports = class DomManipulator {
         card.classList.add('card', type);
         cardBody.classList.add('card-body');
         cardTitle.classList.add('card-title');
+        closeAnchor.classList.add('close');
+        // closeAnchor.setAttribute('href', '#');
         cardText.classList.add('card-text');
         cardFooter.classList.add('card-footer');
         textMuted.classList.add('text-muted');
         underCardLine.classList.add('line');
+
+        // Add content
+        closeHeader.innerHTML = 'x';
 
         var x = this.display_ct(0, textMuted);
         if(type === 'command') {
@@ -349,6 +400,8 @@ module.exports = class DomManipulator {
         }
 
         // Associations
+        closeAnchor.appendChild(closeHeader);
+        cardTitle.appendChild(closeAnchor);
         cardBody.appendChild(cardTitle);
         cardBody.appendChild(cardText);
         cardFooter.appendChild(textMuted);
@@ -437,7 +490,7 @@ module.exports = class DomManipulator {
             td_2.innerHTML = "<a href='" + currentRepo.html_url + "' class='repoLink'>" + currentRepo.id + "</a>";
             td_3.innerHTML = currentRepo.created_at;
             td_4.innerHTML = "<a href='" + currentRepo.owner.html_url + "' class='btn btn-info'>" + currentRepo.owner.login + "</a>";
-            td_5.innerHTML = "<a href='" + currentRepo.owner.url + "' class='btn btn-info'>View</a>";
+            td_5.innerHTML = "<a href='" + currentRepo.url + "' class='btn btn-info'>View</a>";
             td_6.innerHTML = "<a href='" + currentRepo.owner.html_url + "' class='btn btn-danger'>Delete</a>";
 
             // Associations
@@ -454,6 +507,10 @@ module.exports = class DomManipulator {
 
         return table;
     } 
+
+    concealCodeInUrl() {
+        window.location = "http://localhost:8080";
+    }
 
     toggleModals(response) {
         var self = this;
@@ -477,6 +534,7 @@ module.exports = class DomManipulator {
             $('#dangerAlert').removeClass('hide');
             self.addGitOperationHistory(response.status);
         }
+        $('#' + $config.costants.hiddenIntentFieldId).val('');
     }
 
     display_ct (start, element) {

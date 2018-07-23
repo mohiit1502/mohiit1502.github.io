@@ -313,6 +313,54 @@ ADDITIONS
     text-decoration: underline;
 }
 
+.headerprompt {
+  display: flex;
+  width: 100%;
+}
+
+.logotext {
+  color: $theme-supplementer;
+}
+
+#content nav div.collapse li a.nav-link i.far {
+  color: $theme-supplementer;
+  font-size: 1.8em;
+  padding: 0.2em;
+}
+
+#loading-img {
+    background: url(http://preloaders.net/preloaders/360/Velocity.gif) center center no-repeat;
+    height: 100%;
+    z-index: 20;
+}
+
+.overlay {
+    background: #e9e9e9;
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.5;
+}
+
+.loader {
+    border: 0px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 2px solid #3498db;
+    border-right: 2px solid #3498db;
+    width: 20px;
+    height: 20px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+  }
+  
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 @keyframes anim {
     0% {
       display: none;
@@ -335,37 +383,6 @@ ADDITIONS
   99%{    color:transparent;  }
   100%{   color: #000;    }
 }
-
-.headerprompt {
-  display: flex;
-  width: 100%;
-}
-
-.logotext {
-  color: $theme-supplementer;
-}
-
-#content nav div.collapse li a.nav-link i.far {
-  color: $theme-supplementer;
-  font-size: 1.8em;
-  padding: 0.2em;
-}
-
-.loader {
-    border: 0px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 2px solid #3498db;
-    border-right: 2px solid #3498db;
-    width: 20px;
-    height: 20px;
-    -webkit-animation: spin 2s linear infinite; /* Safari */
-    animation: spin 2s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
 
 /* --------------------------------------------------
   OVERRIDES

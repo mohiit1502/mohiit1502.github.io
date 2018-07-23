@@ -32,6 +32,7 @@ module.exports = class Recast {
                 if(intent !== undefined) {
                     domManipulator.displayIntentBox(intent);
                     domManipulator.showWidget(intent);
+                    domManipulator.addGitOperationHistory(command, 'command');
                     domManipulator.populateRecastData(intent, bodyRelevant);
                   //  self.processIntent(intent);
                 }
