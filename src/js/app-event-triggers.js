@@ -1,16 +1,21 @@
-const Recast = require('./bot/recast-ops.js');
+import * as recastOps from './services/recast-ops.js';
+const recastclient = new recastOps.Recast();
 
-const recastclient = new Recast();
-const DomManipulator = require('./dom-ops.js');
+import * as domManipulator from './services/dom-ops.js';
+const dom = new domManipulator.DomManipulator();
 
-const dom = new DomManipulator();
-const Microbot = require('./microbot-ops.js');
+import * as microbotOps from './services/microbot-ops.js';
+const app = new microbotOps.Microbot();
 
-const app = new Microbot();
+import { Helper } from './helpers/helper.js';
+const helper = new Helper();
+
+import { store } from './services/persistent-ops.js';
+
 const $config = require('./config.js');
 
 
-module.exports = $(document).ready(() => {
+$(document).ready(() => {
   // console.log('test');
   app.setToken();
   $('#sidebarCollapse').on('click', () => {
@@ -42,6 +47,16 @@ module.exports = $(document).ready(() => {
       }
     }
   });
+  $('#btnFavorites').click(function() {
+
+  });
+  $('#btnClearCommand').click(function() {
+    $('#command').val('');
+    $('#command').focus();
+  });
+  $('#btnFireCommand').click(function() {
+    hitEnter()
+  });
   $('#btnSubmitConfirm').on('click', () => {
     $('#submitConfirm').removeClass('hide');
   });
@@ -65,18 +80,32 @@ module.exports = $(document).ready(() => {
     $target.hide('slow', () => { $target.remove(); });
     line.hide('slow', () => { line.remove(); });
   });
+  $('#conversations').on('click', '.btn.btn-info.float-right', function () {
+    let parentText = $(this).closest('.card-text').text();
+    const command = parentText.substring(0, parentText.indexOf('Repeat'));
+    hitEnter(command)
+  });
   $('#hideDangerAlert').on('click', () => {
     $('#dangerAlert').addClass('hide');
   });
   $('#git_bridge').on('click', () => {
     window.location.href = 'https://github.com/login/oauth/authorize?scope=user:email:repo&client_id=f6f649a1fe2dfea082ba';
-    // var user = app.getCurrentUser();
-    // if(user) {
-    //     window.location.href = './../continue.html'
-    // } else {
-    //     window.location.href = 'https://github.com/login/oauth/authorize?scope=user:email:repo&client_id=f6f649a1fe2dfea082ba';
-    // }
   });
+  let localHistory = JSON.parse(window.localStorage.getItem('currentState'));
+  window.onload = initOps();
+
+  function initOps() {
+    $('#command').focus();
+    dom.loadConversations(helper.concatenateAndSort(localHistory));
+  }
+  function hitEnter(command) {
+    let commandInputField = $('#command');
+    if(command) commandInputField.val(command);
+    let e = jQuery.Event("keyup");
+    e.which = 13;
+    commandInputField.focus();
+    commandInputField.trigger(e);
+  }
   if (window.location.href.match(/\?code=(.*)/)) {
     const code = window.location.href.match(/\?code=(.*)/)[1];
     app.getToken(code);

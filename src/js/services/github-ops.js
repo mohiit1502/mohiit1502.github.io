@@ -1,16 +1,13 @@
-const config = require('./config.js');
-const GithubHelper = require('./helper.js');
+const config = require('../config.js');
 
-const githubHelper = new GithubHelper();
-const DomManipulator = require('./dom-ops.js');
+import * as domManipulator from './dom-ops.js';
+const dom = new domManipulator.DomManipulator();
 
-const dom = new DomManipulator();
-const PersistentOps = require('./persistent-ops.js');
-
-const persistentOps = new PersistentOps();
+import * as persistent_Ops from './persistent-ops.js';
+const persistentOps = new persistent_Ops.PersistentOps();
 
 
-module.exports = class Github {
+export class Github {
   constructor() {
     this.authorizationToken = `token ${config.gitToken}`;
   }
@@ -18,7 +15,7 @@ module.exports = class Github {
   getToken(code) {
     let token = '';
     self = this;
-    $.getJSON(`http://localhost:9999/authenticate/${code}`, (data) => {
+    $.getJSON(`https://micobot.herokuapp.com/authenticate/${code}`, (data) => {
       console.log(data.token);
       token = data.token;
       // set cookie here

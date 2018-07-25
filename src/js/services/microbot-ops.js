@@ -1,11 +1,10 @@
-const Github = require('./github-ops.js');
+import * as githubOps from './github-ops.js';
+const $github = new githubOps.Github();
 
-const $github = new Github();
-const PersistentOps = require('./persistent-ops.js');
+import * as persistent_Ops from './persistent-ops.js';
+const persistentOps = new persistent_Ops.PersistentOps();
 
-const persistentOps = new PersistentOps();
-
-module.exports = class Microbot {
+export class Microbot {
   constructor(clientId, clientSecret) {
     // TODO move to config or env variables
     this.clientId = 'f6f649a1fe2dfea082ba';
