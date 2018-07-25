@@ -139,7 +139,7 @@
             </div>
             <!-- Widgets -->
             <div class="card-group" id="widgets">
-                <div class="card hide widget good" id="createissue">
+                <div id="createissue" class="card hide widget good">
                     <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
                     <div class="card-body">
                         <h5 class="card-title">Create Issue</h5>
@@ -172,7 +172,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="card hide widget good" id="addcollab">
+                <div id="addcollab" class="card hide widget good">
                     <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
                     <div class="card-body">
                         <h5 class="card-title">Create Collaborator</h5>
@@ -187,7 +187,34 @@
                                     <input type="text" class="form-control" id="repoForCollab" placeholder="Repository To Add collaborator on ...." required>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitAddCollab   " data-target="#submitConfirm">Submit</button>
+                            <div class="form-group">
+                                <label for="comment">Comment:</label>
+                                <textarea class="form-control" rows="3" id="comment"></textarea>
+                            </div>
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitAddCollab" data-target="#submitConfirm">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="addissuecomment" class="card hide widget good">
+                    <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                    <div class="card-body">
+                        <h5 class="card-title">Add Comment</h5>
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="repoForIssueComment">Repository Name</label>
+                                    <input type="text" class="form-control" id="repoForIssueComment" placeholder="Repository Name...." required>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="issueNumber">Issue Number</label>
+                                    <input type="text" class="form-control" id="issueNumber" placeholder="Issue To Comment On..." required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="issueComment">Comment:</label>
+                                <textarea class="form-control" rows="3" id="issueComment"></textarea>
+                            </div>
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitAddComment" data-target="#submitConfirm">Submit</button>
                         </form>
                     </div>
                 </div>
@@ -200,7 +227,43 @@
                                     <p>View Repositories for the user mohiit1502?</p>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitAddCollab   " data-target="#submitConfirm">Submit</button>
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitViewRepo" data-target="#submitConfirm">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="closeissue" class="card hide widget good">
+                    <div class="card-body">
+                        <h5 class="card-title">Close Issue</h5>
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="repoForIssueClose">Repository Name</label>
+                                    <input type="text" class="form-control" id="repoForIssueClose" placeholder="Repository Name...." required>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="issueNumerToClose">Issue To Close</label>
+                                    <input type="text" class="form-control" id="issueNumerToClose" placeholder="Specify issue number..." required>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitCloseIssue" data-target="#submitConfirm">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="displaylastcomment" class="card hide widget good">
+                    <div class="card-body">
+                        <h5 class="card-title">Display Last Comment</h5>
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="repoForCommentView">Repository Name</label>
+                                    <input type="text" class="form-control" id="repoForCommentView" placeholder="Repository Name...." required>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-lg-6 col-xs-6 mb-3">
+                                    <label for="issueNumberForCommentView">Issue To Close</label>
+                                    <input type="text" class="form-control" id="issueNumberForCommentView" placeholder="Specify issue number..." required>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitCommentView" data-target="#submitConfirm">Submit</button>
                         </form>
                     </div>
                 </div>
