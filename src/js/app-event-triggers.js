@@ -1,19 +1,17 @@
-import * as recastOps from './services/recast-ops.js';
+import * as recastOps from './services/recast-ops';
+
+import * as domManipulator from './services/dom-ops';
+
+import * as microbotOps from './services/microbot-ops';
+
+import { Helper } from './helpers/helper';
+
 const recastclient = new recastOps.Recast();
-
-import * as domManipulator from './services/dom-ops.js';
 const dom = new domManipulator.DomManipulator();
-
-import * as microbotOps from './services/microbot-ops.js';
 const app = new microbotOps.Microbot();
-
-import { Helper } from './helpers/helper.js';
 const helper = new Helper();
 
-import { store } from './services/persistent-ops.js';
-
 const $config = require('./config.js');
-
 
 $(document).ready(() => {
   // console.log('test');
@@ -33,7 +31,7 @@ $(document).ready(() => {
   });
   $('#command').keyup((e) => {
     const code = (e.keyCode ? e.keyCode : e.which);
-    if (code == 13) {
+    if (code === 13) {
       $('#widgets').children().addClass('hide');
       $('#successAlert').addClass('hide');
       $('#dangetAlert').addClass('hide');
@@ -43,27 +41,37 @@ $(document).ready(() => {
         const text = { text: command };
         recastclient.getAndCallProcessIntent(command, text);
       } else {
-        dom.showEmptyCommandMessage();
+        dom.showEmptyCommandMessage('Please type some relevant words in the command box.');
       }
     }
   });
-  $('#btnFavorites').click(function() {
+  $('#btnFavorites').click(() => {
 
   });
-  $('#btnClearCommand').click(function() {
+  $('#btnClearCommand').click(() => {
     $('#command').val('');
     $('#command').focus();
   });
-  $('#btnFireCommand').click(function() {
-    hitEnter()
+  function hitEnter(command) {
+    const commandInputField = $('#command');
+    if (command) commandInputField.val(command);
+    const e = jQuery.Event('keyup');
+    e.which = 13;
+    commandInputField.focus();
+    commandInputField.trigger(e);
+  }
+  $('#btnFireCommand').click(() => {
+    hitEnter();
   });
   $('#btnSubmitConfirm').on('click', () => {
     $('#submitConfirm').removeClass('hide');
   });
   $('#submitGitData').on('click', () => {
     const data = dom.getDataFromFormAsJSON();
-    const intent = $(`#${$config.costants.hiddenIntentFieldId}`).val();
+    const intent = $(`#${$config.constants.hiddenIntentFieldId}`).val();
     if (intent) {
+      data.intent = intent;
+      // store.dispatch($)
       const operation = $config.intentSlugToOperations[intent].githubOperation;
       app[operation](data);
     }
@@ -81,30 +89,22 @@ $(document).ready(() => {
     line.hide('slow', () => { line.remove(); });
   });
   $('#conversations').on('click', '.btn.btn-info.float-right', function () {
-    let parentText = $(this).closest('.card-text').text();
+    const parentText = $(this).closest('.card-text').text();
     const command = parentText.substring(0, parentText.indexOf('Repeat'));
-    hitEnter(command)
+    hitEnter(command);
   });
   $('#hideDangerAlert').on('click', () => {
     $('#dangerAlert').addClass('hide');
   });
-  $('#git_bridge').on('click', () => {
-    window.location.href = 'https://github.com/login/oauth/authorize?scope=user:email:repo&client_id=f6f649a1fe2dfea082ba';
-  });
-  let localHistory = JSON.parse(window.localStorage.getItem('currentState'));
+  // $('#git_bridge').on('click', () => {
+  //   window.location.href = 'https://github.com/login/oauth/authorize?scope=user:email:repo&client_id=f6f649a1fe2dfea082ba';
+  // });
+  const localHistory = JSON.parse(window.localStorage.getItem('currentState'));
   window.onload = initOps();
 
   function initOps() {
     $('#command').focus();
     dom.loadConversations(helper.concatenateAndSort(localHistory));
-  }
-  function hitEnter(command) {
-    let commandInputField = $('#command');
-    if(command) commandInputField.val(command);
-    let e = jQuery.Event("keyup");
-    e.which = 13;
-    commandInputField.focus();
-    commandInputField.trigger(e);
   }
   if (window.location.href.match(/\?code=(.*)/)) {
     const code = window.location.href.match(/\?code=(.*)/)[1];

@@ -20,4 +20,4 @@ export const addcollab = `<div id="addcollab" class="card hide widget good">
             <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitAddCollab" data-target="#submitConfirm">Submit</button>
         </form>
     </div>
-</div>`
+</div>`;

@@ -15,4 +15,4 @@ export const closeissue = `<div id="closeissue" class="card hide widget good">
             <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitCloseIssue" data-target="#submitConfirm">Submit</button>
         </form>
     </div>
-</div>`
+</div>`;

@@ -1,10 +1,10 @@
-import * as PersistentOps from './persistent-ops';
-const store = PersistentOps.store;
-const $config = require('../config');
-import * as domManipulator from './dom-ops';
-const dom = new domManipulator.DomManipulator();
+import * as PersistentOps from "./persistent-ops";
+import * as domManipulator from "./dom-ops";
 
-const $actions = $config.actions;
+const store = PersistentOps.store;
+const $config = require("../config");
+
+const dom = new domManipulator.DomManipulator();
 
 export class Recast {
     constructor() {
@@ -14,37 +14,41 @@ export class Recast {
 
     getAndCallProcessIntent(command, text) {
         self = this;
-        var url = this.requestUrl + "?text=" + command;
-        var bodyRelevant = '';
-        var intent = '';
+        const url = `${this.requestUrl}?text=${command}`;
+        let bodyRelevant = "";
+        let intent = "";
         fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
-                "Authorization": "Token " + this.recastToken
+                Authorization: `Token ${this.recastToken}`,
             },
-            data: text
+            data: text,
         })
-        .then(function(response) { 
-            response.json().then(function(body) {
-                bodyRelevant = body.results;
-                intent = bodyRelevant.intents[0]["slug"];
-                $('#' + $config.costants.hiddenIntentFieldId).val(intent)
-                if(intent !== undefined) {
-                    dom.displayIntentBox(intent);
-                    if(intent == 'resethistory') {
-                        store.dispatch($actions.action_clear_history);
-                        return;
+            .then((response) => {
+                response.json().then((body) => {
+                    bodyRelevant = body.results;
+                    intent = bodyRelevant.intents[0] ? bodyRelevant.intents[0].slug : "";
+                    if (intent !== undefined && intent !== "") {
+                        if (!Object.keys($config.intentSlugToOperations).includes(intent)) {
+                            dom.showEmptyCommandMessage("Intent is either not Identified or is not supported, please try again with a different text.");
+                            return;
+                        }
+                        $(`#${$config.constants.hiddenIntentFieldId}`).val(intent);
+                        dom.displayIntentBox(intent);
+                        if (intent == "resethistory") {
+                            store.dispatch($config.intentSlugToOperations.resethistory.action);
+                            return;
+                        }
+                        dom.showWidget(intent);
+                        dom.populateRecastData(intent, bodyRelevant);
+                        store.dispatch($config.intentSlugToOperations.addquery.action);
                     }
-                    dom.showWidget(intent);
-                    dom.populateRecastData(intent, bodyRelevant);
-                    store.dispatch($actions.action_add_query);
-                }
-                return intent;
+                    return intent;
+                });
+            })
+            .catch((error) => {
+                console.error("Fetch Error =\n", error);
             });
-        })
-        .catch(function(error) { 
-            console.error('Fetch Error =\n', error);
-        });
-    };
+    }
 }

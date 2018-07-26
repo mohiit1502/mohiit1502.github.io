@@ -15,4 +15,4 @@ export const displaylastcomment = `<div id="displaylastcomment" class="card hide
             <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitCommentView" data-target="#submitConfirm">Submit</button>
         </form>
     </div>
-</div>`
+</div>`;

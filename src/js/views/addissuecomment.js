@@ -20,4 +20,4 @@ export const addissuecomment = `<div id="addissuecomment" class="card hide widge
             <button class="btn btn-primary" type="button" data-toggle="modal" data-dismiss="modal" id="btnSubmitAddComment" data-target="#submitConfirm">Submit</button>
         </form>
     </div>
-</div>`
+</div>`;

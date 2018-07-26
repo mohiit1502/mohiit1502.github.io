@@ -40,4 +40,4 @@ export const createrepo = `<div id="createrepo" class="card hide widget good">
         </form>
     </div>
 </div>
-`
+`;
