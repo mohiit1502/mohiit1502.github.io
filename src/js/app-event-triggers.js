@@ -6,6 +6,8 @@ import * as microbotOps from './services/microbot-ops';
 
 import { Helper } from './helpers/helper';
 
+import { store } from "./services/persistent-ops.js";
+
 const recastclient = new recastOps.Recast();
 const dom = new domManipulator.DomManipulator();
 const app = new microbotOps.Microbot();
@@ -71,7 +73,9 @@ $(document).ready(() => {
     const intent = $(`#${$config.constants.hiddenIntentFieldId}`).val();
     if (intent) {
       data.intent = intent;
-      // store.dispatch($)
+      var action = $config.intentSlugToOperations[intent].action;
+      action.payload = data;
+      store.dispatch(action);
       const operation = $config.intentSlugToOperations[intent].githubOperation;
       app[operation](data);
     }

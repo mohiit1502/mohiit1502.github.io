@@ -138,19 +138,21 @@ function mbReducer(currentState, action) {
         return nextState;
         break;
     case "ADD_REPO":
-        // let command = document.getElementById('command').value;
-        // nextState = window.localStorage.getItem('currentState') ? JSON.parse(window.localStorage.getItem('currentState')) : currentState;
-        // newHistory.command = command;
-        // newHistory.type = 'command';
-        // // newHistory.intent = 'commandbot'
-        // newHistory.insertionCounter = ++nextState.insertionCounter;
-        // if(nextState.queries) {
-        //   nextState.queries = [ ...nextState.queries, newHistory ];
-        // } else {
-        //   nextState.queries = [ newHistory ];
-        // }
-        // window.localStorage.setItem('currentState', JSON.stringify(nextState));
-        // return nextState;
+        response = action.payload;
+        nextState = window.localStorage.getItem('currentState') ? JSON.parse(window.localStorage.getItem('currentState')) : currentState;
+        newHistory = response;
+        newHistory.type = 'widget';
+        newHistory.insertionCounter = ++nextState.insertionCounter;
+        if(response.intent) {
+          let intent = response.intent;
+          if(nextState[intent]) {
+            nextState[intent] = [ ...nextState[intent], newHistory ];
+          } else {
+            nextState[intent] = [ newHistory ];
+          }
+        }
+        window.localStorage.setItem('currentState', JSON.stringify(nextState));
+        return nextState;
         break;
     case "ADD_COLLAB":
         // let command = document.getElementById('command').value;
